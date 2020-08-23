@@ -4,6 +4,7 @@ import {
   FormControl,
   Select,
 } from "@material-ui/core";
+import InfoBox from './InfoBox';
 import "./App.css";
 
 function App() {
@@ -30,9 +31,6 @@ function App() {
 
   const onCountryChange =  (event) => {
     const countryCode = event.target.value;
-
-    console.log("YO", countryCode);
-
     setCountry(countryCode);
   }
 
@@ -57,7 +55,13 @@ function App() {
 
         </FormControl>
       </div>
-       
+
+      <div className="app__stats"></div>
+       <InfoBox title="Coronavirus cases" cases={123} totlal={2000}/>
+
+       <InfoBox title="Recovered" cases={123} total={3000}/>
+
+       <InfoBox title="Deaths" cases={123} total={4000}/>
     </div>
   );
 }
