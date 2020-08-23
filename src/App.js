@@ -3,13 +3,17 @@ import {
   MenuItem,
   FormControl,
   Select,
+  Card,
+  CardContent,
 } from "@material-ui/core";
 import InfoBox from './InfoBox';
+import Map from './Map';
 import "./App.css";
 
 function App() {
   const [countries, setCountries] = useState([]);
   const [country, setCountry] = useState('worldwide');
+  const [countryInfo, setCountryInfo] = useState({});
 
 
   useEffect(() => {
@@ -29,39 +33,63 @@ function App() {
     getCountriesData();
   }, []);
 
-  const onCountryChange =  (event) => {
+  const onCountryChange = async (event) => {
     const countryCode = event.target.value;
     setCountry(countryCode);
-  }
+
+    const url = countryCode === 'worldwide' 
+    ? 'https://disease.sh/v3/covid-19/all' 
+    : `https://disease.sh/v3/covid-19/countries/${countryCode}`;
+
+    await fetch(url)
+    .then(response => response.json())
+    .then(data => {
+      setCountry(countryCode);
+      setCountryInfo(data);
+    })
+
+    // https://disease.sh/v3/covid-19/all
+    // https://disease.sh/v3/covid-19/countries [COUNTRY_CODE]
+  };
 
   return (
     <div className = "app">
-      <div className="app__header">
-      <h1> Covid - 19 Tracker </h1> 
-        <FormControl className = "app_dropdown">
-          <Select variant = "outlined" onChange={onCountryChange} value = {country} >
-            <MenuItem value = "worldwide" > Worldwide < /MenuItem>
-            {
-              countries.map(country => (
+      <div className="app__left">
+        <div className="app__header">
+          <h1> Covid - 19 Tracker </h1> 
+          <FormControl className = "app_dropdown">
+            <Select variant = "outlined" onChange={onCountryChange} value = {country} >
+              <MenuItem value = "worldwide" >Worldwide< /MenuItem>
+              {countries.map(country => (
                 <MenuItem value = {country.value} >{country.name}< /MenuItem> 
-              ))
-            }
+              ))}
+            </Select>
+          </FormControl>
+        </div>
 
-            {/* <MenuItem value = "worldwide" > Worldwide < /MenuItem> 
-            <MenuItem value = "worldwide" > Option 2 < /MenuItem> 
-            <MenuItem value = "worldwide" > option3 < /MenuItem> 
-            <MenuItem value = "worldwide" > Option4 < /MenuItem>  */}
-          </Select>
+        <div className="app__stats">
+          <InfoBox title="Coronavirus cases" cases={123} totlal={2000}/>
+          <InfoBox title="Recovered" cases={1234} total={3000}/>
+          <InfoBox title="Deaths" cases={12345} total={4000}/>
+        </div>
 
-        </FormControl>
+          
+          {/*Map*/}
+          <Map/>
       </div>
+      <Card className="app__right">
+        <CardContent>
+          <h3>live Cases by Country</h3>
+          {/*Table*/}
+          <h3>Worldwide new cases</h3>
+          {/*Graph*/}
+        </CardContent>
+        
+      </Card>
 
-      <div className="app__stats"></div>
-       <InfoBox title="Coronavirus cases" cases={123} totlal={2000}/>
 
-       <InfoBox title="Recovered" cases={123} total={3000}/>
+      
 
-       <InfoBox title="Deaths" cases={123} total={4000}/>
     </div>
   );
 }
