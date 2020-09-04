@@ -80,7 +80,6 @@ function LineGraph({ casesType = 'cases'}) {
         };
 
         fetchData();
-       
     }, [casesType]);
 
     return (

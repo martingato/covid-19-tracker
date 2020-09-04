@@ -19,7 +19,8 @@ function App() {
   const [country, setCountry] = useState('worldwide');
   const [countryInfo, setCountryInfo] = useState({});
   const [tableData, setTableData] = useState([]);
-  const [mapCenter, setMapCenter] = useState({ lat: 34.80746, lng: -40.4796});
+  const [mapCenter, setMapCenter] = useState({lat: 34.80746, lng: -40.4796});
+  const [mapZoom, setMapZoom] = useState(3);
 
   useEffect(() => {
     fetch("https://disease.sh/v3/covid-19/all")
@@ -45,22 +46,27 @@ function App() {
         setCountries(countries);
       });
     };
+
     getCountriesData();
   }, []);
 
   const onCountryChange = async (event) => {
     const countryCode = event.target.value;
-    setCountry(countryCode);
+    // setCountry(countryCode);
 
-    const url = countryCode === 'worldwide' 
+    const url = 
+    countryCode === 'worldwide' 
     ? 'https://disease.sh/v3/covid-19/all' 
     : `https://disease.sh/v3/covid-19/countries/${countryCode}`;
 
     await fetch(url)
-    .then(response => response.json())
-    .then(data => {
-      setCountry(countryCode);
-      setCountryInfo(data);
+      .then(response => response.json())
+      .then(data => {
+        setCountry(countryCode);
+        setCountryInfo(data);
+
+        setMapCenter([data.countryInfo.lat, data.countryInfo.lng]);
+        setMapZoom(4);
     });
 
     // https://disease.sh/v3/covid-19/all
@@ -90,7 +96,10 @@ function App() {
 
           
           {/*Map*/}
-          <Map center={mapCenter} zoom={mapZoom}/>
+        <Map 
+          center={mapCenter} 
+          zoom={mapZoom}
+        />
       </div>
       <Card className="app__right">
         <CardContent>
