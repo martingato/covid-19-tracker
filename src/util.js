@@ -1,3 +1,7 @@
+import React from 'react';
+import numeral from 'numeral';
+import {Circle, Popup} from 'react-leaflet';
+
 export const sortData = (data) => {
     const sortedData = [...data];
 
@@ -9,6 +13,14 @@ export const sortData = (data) => {
     //     }
     // })
     // return sortedData;
-    return sortedData.sort((a, b) => (a.cases > b.cases ? -1 : 1))
+    return sortedData.sort((a, b) => (a.cases > b.cases ? -1 : 1));
 };
+
+export const showDataOnMap = (data, casesType='cases') => (
+    data.map(country => (
+        <Circle>
+            
+        </Circle>
+    ))
+):
 
